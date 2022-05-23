@@ -30,17 +30,22 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             res.send(products);
         });
 
+        app.get('/order', async(req, res) => {
+            const orderUser = req.query.user;
+            const query = {user: orderUser};
+            const orderBookings = await orderCollection.find(query).toArray();
+            res.send(orderBookings);
+
+        });
+
         // Order add when user Book order
         app.post('/order', async(req, res) => {
             const order = req.body;
-            const query = {availableQuan: orderDetails.availableQuan, orderQuantity: orderDetails.orderQuantity}
-            const exixts = await orderCollection.findOne(query);
-            if(exists){
-
-            }
+            // const query = {availableQuan: orderDetails.availableQuan, orderQuantity: orderDetails.orderQuantity}
             const result = await orderCollection.insertOne(order);
             res.send(result);
         });
+
 
 
     }
