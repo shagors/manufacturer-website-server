@@ -20,12 +20,26 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
     try{
         await client.connect();
         const productCollection = client.db('manufacture_Co').collection('products');
+        const orderCollection = client.db('manufacture_Co').collection('orders');
 
+        // products send to ui
         app.get('/product', async(req, res) => {
             const query = {};
             const cursor = productCollection.find(query).project(query);
             const products = await cursor.toArray();
             res.send(products);
+        });
+
+        // Order add when user Book order
+        app.post('/order', async(req, res) => {
+            const order = req.body;
+            const query = {availableQuan: orderDetails.availableQuan, orderQuantity: orderDetails.orderQuantity}
+            const exixts = await orderCollection.findOne(query);
+            if(exists){
+
+            }
+            const result = await orderCollection.insertOne(order);
+            res.send(result);
         });
 
 
