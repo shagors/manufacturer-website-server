@@ -21,6 +21,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
         await client.connect();
         const productCollection = client.db('manufacture_Co').collection('products');
         const orderCollection = client.db('manufacture_Co').collection('orders');
+        const userCollection = client.db('manufacture_Co').collection('userss');
 
         // products send to ui
         app.get('/product', async(req, res) => {
@@ -29,6 +30,20 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             const products = await cursor.toArray();
             res.send(products);
         });
+
+        app.put('/user/:email', async(req, res) => {
+            const email = req.params.email;
+            const user = req.body;
+            const filter = {email: email};
+            const options = { upsert: true};
+            const updateDoc = {
+                $set: user,
+            };
+            const result= await userCollection.updateOne(filter, updateDoc, options);
+            // const token = jwt.sign({email: email}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+            res.send(result);
+        });
+
 
         app.get('/order', async(req, res) => {
             const orderUser = req.query.user;
