@@ -129,6 +129,11 @@ function verifyJWT(req, res, next){
             }
         });
 
+        app.get('/order', verifyJWT, async (req, res) => {
+            const orders = await orderCollection.find().toArray();
+            res.send(orders);
+        });
+
         // Order add when user Book order
         app.post('/order', async(req, res) => {
             const order = req.body;
