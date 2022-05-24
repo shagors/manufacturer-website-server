@@ -38,12 +38,22 @@ function verifyJWT(req, res, next){
         const orderCollection = client.db('manufacture_Co').collection('orders');
         const userCollection = client.db('manufacture_Co').collection('userss');
 
+
+        
+
         // products send to ui
         app.get('/product', async(req, res) => {
             const query = {};
             const cursor = productCollection.find(query).project(query);
             const products = await cursor.toArray();
             res.send(products);
+        });
+
+        // add products from ui
+        app.post('/product', verifyJWT, async(req, res) => {
+            const product = req.body;
+            const result = await productCollection.insertOne(product);
+            res.send(result);
         });
 
         app.get('/user', verifyJWT, async(req, res) => {
@@ -84,7 +94,7 @@ function verifyJWT(req, res, next){
                 $set: user,
             };
             const result= await userCollection.updateOne(filter, updateDoc, options);
-            const token = jwt.sign({email: email}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '2h' });
+            const token = jwt.sign({email: email}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '6h' });
             res.send({result, token});
         });
 
