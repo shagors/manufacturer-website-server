@@ -65,6 +65,14 @@ function verifyJWT(req, res, next){
             res.send(result);
         });
 
+        // delete product
+        app.delete('/product/:id', verifyJWT, verifyAdmin, async(req, res) => {
+            const id = req.params.id || '';
+            const filter = {_id: ObjectId(id)};
+            const result = await productCollection.deleteOne(filter);
+            res.send(result);
+        });
+
         app.get('/user', verifyJWT, async(req, res) => {
             const users = await userCollection.find().toArray();
             res.send(users);
