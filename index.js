@@ -38,8 +38,17 @@ function verifyJWT(req, res, next){
         const orderCollection = client.db('manufacture_Co').collection('orders');
         const userCollection = client.db('manufacture_Co').collection('userss');
 
-
-        
+        // verify Admin
+        const verifyAdmin = async(req, res, next) => {
+            const requester = req.decoded.email;
+            const requesterAccount = await userCollection.findOne({email: requester});
+            if(requesterAccount.role === 'admin'){
+                next();
+            }
+            else{
+                res.status(403).send({message: 'Forbidden Access'});
+            }
+        }
 
         // products send to ui
         app.get('/product', async(req, res) => {
@@ -50,7 +59,7 @@ function verifyJWT(req, res, next){
         });
 
         // add products from ui
-        app.post('/product', verifyJWT, async(req, res) => {
+        app.post('/product', verifyJWT, verifyAdmin, async(req, res) => {
             const product = req.body;
             const result = await productCollection.insertOne(product);
             res.send(result);
