@@ -38,6 +38,7 @@ function verifyJWT(req, res, next){
         const productCollection = client.db('manufacture_Co').collection('products');
         const orderCollection = client.db('manufacture_Co').collection('orders');
         const userCollection = client.db('manufacture_Co').collection('userss');
+        const paymentCollection = client.db('manufacture_Co').collection('payments');
 
         // verify Admin
         const verifyAdmin = async(req, res, next) => {
@@ -151,6 +152,21 @@ function verifyJWT(req, res, next){
             const query = {_id: ObjectId(id)};
             const order = await orderCollection.findOne(query);
             res.send(order);
+        });
+
+        app.patch('/order/:id', verifyJWT, async(req, res) => {
+            const id = req.params.id;
+            const payment = req.body;
+            const filter = {_id: ObjectId(id)};
+            const updateDoc = {
+                $set: {
+                    pain: true,
+                    transactionId: payment.transactionId,
+                }
+            };
+            const result = await paymentCollection.insertOne(payment);
+            const updatedBooking = await orderCollection.updateOne(filter, updateDoc);
+            res.send(updateDoc);
         });
 
 
