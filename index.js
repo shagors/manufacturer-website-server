@@ -129,10 +129,15 @@ function verifyJWT(req, res, next){
             }
         });
 
-        app.get('/order', verifyJWT, async (req, res) => {
-            const orders = await orderCollection.find().toArray();
-            res.send(orders);
+
+        // for payment
+        app.get('order/:id', verifyJWT, async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)}
+            const order = await orderCollection.findOne(query);
+            res.send(order);
         });
+
 
         // Order add when user Book order
         app.post('/order', async(req, res) => {
@@ -141,8 +146,6 @@ function verifyJWT(req, res, next){
             const result = await orderCollection.insertOne(order);
             res.send(result);
         });
-
-
 
     }
     finally{
