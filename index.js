@@ -186,7 +186,7 @@ function verifyJWT(req, res, next){
         });
 
 
-        app.post('/review', async(req, res) => {
+        app.post('/review/:id', async(req, res) => {
             const order = req.body;
             // const query = {availableQuan: orderDetails.availableQuan, orderQuantity: orderDetails.orderQuantity}
             const result = await orderCollection.insertOne(order);
