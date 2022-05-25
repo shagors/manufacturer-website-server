@@ -39,6 +39,7 @@ function verifyJWT(req, res, next){
         const orderCollection = client.db('manufacture_Co').collection('orders');
         const userCollection = client.db('manufacture_Co').collection('userss');
         const paymentCollection = client.db('manufacture_Co').collection('payments');
+        const reviewCollection = client.db('manufacture_Co').collection('reviews');
 
         // verify Admin
         const verifyAdmin = async(req, res, next) => {
@@ -172,6 +173,20 @@ function verifyJWT(req, res, next){
 
         // Order add when user Book order
         app.post('/order', async(req, res) => {
+            const order = req.body;
+            // const query = {availableQuan: orderDetails.availableQuan, orderQuantity: orderDetails.orderQuantity}
+            const result = await orderCollection.insertOne(order);
+            res.send(result);
+        });
+
+
+        app.get('/review', async(req, res) => {
+            const users = await reviewCollection.find().toArray();
+            res.send(users);
+        });
+
+
+        app.post('/review', async(req, res) => {
             const order = req.body;
             // const query = {availableQuan: orderDetails.availableQuan, orderQuantity: orderDetails.orderQuantity}
             const result = await orderCollection.insertOne(order);
